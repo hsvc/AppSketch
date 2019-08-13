@@ -46,10 +46,8 @@ public class MainActivity extends Activity {
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View v){
-                System.out.println("THIS IS PATH2: "+path);
-
                 File f = new File(path);
-//
+
 //                if(f.exists())
 //                    System.out.println("this is a file");
 //                else if(f.isDirectory())
@@ -58,7 +56,7 @@ public class MainActivity extends Activity {
 //                    System.out.println("this is not a file");
 
                 Future uploading = Ion.with(MainActivity.this)
-                        .load("localhost:3000/upload")
+                        .load("http://127.0.0.1:3000/upload")
                         .setMultipartFile("image", f)
                         .asString()
                         .withResponse()
@@ -68,7 +66,6 @@ public class MainActivity extends Activity {
                             public void onCompleted(Exception e, Response<String> result) {
                                 try{
                                     System.out.println("this is result "+result);/* result가 null값 찍힘 */
-                                    //System.out.println("this is result.getResult() "+result.getResult());
                                     JSONObject jobj =new JSONObject(result.getResult());
                                     Toast.makeText(getApplicationContext(), jobj.getString("response"), Toast.LENGTH_SHORT).show();
                                 }catch (JSONException e1){
@@ -106,9 +103,9 @@ public class MainActivity extends Activity {
             case 100:
                 if (resultCode == RESULT_OK){
                     path= getPathFromUri(getApplicationContext(), data.getData());
-                    System.out.println("this is uri"+data.getData());
-                    System.out.println("this is data"+data);
-                    System.out.println("this is my path ~ "+ path);
+//                    System.out.println("this is uri"+data.getData());
+//                    System.out.println("this is data"+data);
+//                    System.out.println("this is my path ~ "+ path);
                     img.setImageURI(data.getData());
                     upload.setVisibility(View.VISIBLE);
                 }
@@ -125,7 +122,6 @@ public class MainActivity extends Activity {
             cursor.moveToFirst();
             return cursor.getString(column_index);
         } catch (Exception e) {
-            //Log.e(TAG, "getRealPathFromURI Exception : " + e.toString());
             return "";
         } finally {
             if (cursor != null) {
