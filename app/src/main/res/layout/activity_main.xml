@@ -6,27 +6,31 @@
     tools:context=".MainActivity">
 
     <TextView
-        android:text="Image Upload"
-        android:textSize="25sp"
         android:layout_width="wrap_content"
+        android:layout_height="42dp"
         android:layout_gravity="center"
-        android:layout_height="wrap_content" />
+        android:text="Street Painter"
+        android:layout_margin="@android:dimen/app_icon_size"
+        android:textSize="35sp" />
+
     <Button
+        android:id="@+id/selimg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Select Image"
-        android:id="@+id/selimg"/>
+        android:text="Select Image" />
+
     <ImageView
-        android:layout_width="400px"
-        android:layout_height="400px"
+        android:layout_width="800px"
+        android:layout_height="800px"
         android:layout_gravity="center"
         android:id="@+id/img"/>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Upload Image"
+        android:text="Change Image"
+        android:layout_margin="@android:dimen/app_icon_size"
         android:id="@+id/uploadimg"/>
 
 

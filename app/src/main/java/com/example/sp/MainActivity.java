@@ -1,11 +1,15 @@
 package com.example.sp;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.v4.content.CursorLoader;
 import android.util.Log;
@@ -36,23 +40,35 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         img=findViewById(R.id.img);
         Ion.getDefault(this).configure().setLogging("ion-sample", Log.DEBUG);
-        imgsel=findViewById(R.id.selimg);
+        imgsel=findViewById(R.id.selimg);// Selected Image 관리
         upload=findViewById(R.id.uploadimg);
         upload.setVisibility(View.INVISIBLE);
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View v){
+                System.out.println("THIS IS PATH2: "+path);
+
                 File f = new File(path);
+//
+//                if(f.exists())
+//                    System.out.println("this is a file");
+//                else if(f.isDirectory())
+//                    System.out.println("this is directory");
+//                else
+//                    System.out.println("this is not a file");
 
                 Future uploading = Ion.with(MainActivity.this)
-                        .load("localhost:8080/upload")
+                        .load("localhost:3000/upload")
                         .setMultipartFile("image", f)
                         .asString()
                         .withResponse()
                         .setCallback(new FutureCallback<Response<String>>() {
+                            /* 완성되었을 때 Json 파일로 결과를 보여준다 */
                             @Override
                             public void onCompleted(Exception e, Response<String> result) {
                                 try{
+                                    System.out.println("this is result "+result);/* result가 null값 찍힘 */
+                                    //System.out.println("this is result.getResult() "+result.getResult());
                                     JSONObject jobj =new JSONObject(result.getResult());
                                     Toast.makeText(getApplicationContext(), jobj.getString("response"), Toast.LENGTH_SHORT).show();
                                 }catch (JSONException e1){
@@ -63,11 +79,18 @@ public class MainActivity extends Activity {
             }
         });
 
+        /* Image를 선택해서 imageVIew에 불러옴 */
         imgsel.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                Intent fintent=new Intent(Intent.ACTION_GET_CONTENT);
-                fintent.setType("image/jpeg");
+//                Intent fintent=new Intent(Intent.ACTION_OPEN_DOCUMENT);
+//                //fintent.setType("image/jpeg");
+//                fintent.addCategory(Intent.CATEGORY_OPENABLE);
+//                fintent.setType("image/jpeg");
+                Intent fintent = new Intent(
+                        Intent.ACTION_PICK,
+                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                );
                 try{
                     startActivityForResult(fintent, 100);
                 }catch(ActivityNotFoundException e){
@@ -76,25 +99,39 @@ public class MainActivity extends Activity {
             }
         });
     }
+
     protected  void onActivityResult(int requestCode, int resultCode, Intent data){
         if(data==null) return;
         switch (requestCode){
             case 100:
                 if (resultCode == RESULT_OK){
-                    path=getPathFromURI(data.getData());
-                    System.out.println("THIS IS PATH!!! : "+path);
+                    path= getPathFromUri(getApplicationContext(), data.getData());
+                    System.out.println("this is uri"+data.getData());
+                    System.out.println("this is data"+data);
+                    System.out.println("this is my path ~ "+ path);
                     img.setImageURI(data.getData());
                     upload.setVisibility(View.VISIBLE);
                 }
         }
     }
 
-    private String getPathFromURI(Uri contentUri) {
-        String[] proj={MediaStore.Images.Media.DATA};
-        CursorLoader loader = new CursorLoader(getApplicationContext(), contentUri, proj, null, null, null);
-        Cursor cursor = loader.loadInBackground();
-        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToFirst();
-        return cursor.getString(column_index);
+    public String getPathFromUri(Context context, Uri contentUri){
+
+        Cursor cursor = null;
+        try {
+            String[] proj = { MediaStore.Images.Media.DATA };
+            cursor = context.getContentResolver().query(contentUri,  proj, null, null, null);
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } catch (Exception e) {
+            //Log.e(TAG, "getRealPathFromURI Exception : " + e.toString());
+            return "";
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
     }
 }
