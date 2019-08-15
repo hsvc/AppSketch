@@ -56,15 +56,12 @@ public class MainActivity extends Activity {
         img=findViewById(R.id.img);
         imgsel=findViewById(R.id.selimg);// Selected Image 관리
 
-        //FileUpload upload=ServiceGenerator.createService(FileUpload.class);
-
-
-
         upload=findViewById(R.id.uploadimg);
         upload.setVisibility(View.INVISIBLE);
         upload.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
+                /* 어플리케이션 자체의 저장공간 권한을 줬을 때 이미지에 permission이 주어짐 */
                 uploadToServer(path);
             }
         });
