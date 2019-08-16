@@ -1,8 +1,14 @@
 package com.example.sp;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
+import android.widget.ImageView;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -31,12 +37,12 @@ public class ResultActivity extends Activity {
                 if (response.isSuccessful()) {
                     System.out.println("server contacted and has file");
 
-                    boolean writtenToDisk = writeResponseBodyToDisk(response.body());
+                    String writtenToDisk = writeResponseBodyToDisk(response.body());
+                    System.out.println("response: "+response);
 
                     System.out.println("file download was a success? " + writtenToDisk);
                 } else {
                     System.out.println("server contact failed");
-                    System.out.println("response: "+response);
                 }
             }
 
@@ -46,23 +52,23 @@ public class ResultActivity extends Activity {
             }
         });
     }
-    private boolean writeResponseBodyToDisk(ResponseBody body) {
+    private String writeResponseBodyToDisk(ResponseBody body) {
         try {
             // todo change the file location/name according to your needs
-            File futureStudioIconFile = new File("C:\\and\\" + File.separator + "Future Studio Icon.png");
+            File futureStudioIconFile = new File(getExternalFilesDir("C:\\and\\") + File.separator + "LetMeSee.jpg");
 
             InputStream inputStream = null;
             OutputStream outputStream = null;
 
             try {
+
                 byte[] fileReader = new byte[4096];
 
                 long fileSize = body.contentLength();
                 long fileSizeDownloaded = 0;
-
                 inputStream = body.byteStream();
-                outputStream = new FileOutputStream(futureStudioIconFile);
 
+                outputStream = new FileOutputStream(futureStudioIconFile);
                 while (true) {
                     int read = inputStream.read(fileReader);
 
@@ -79,10 +85,16 @@ public class ResultActivity extends Activity {
 
                 outputStream.flush();
 
-                return true;
+                return "true";
             } catch (IOException e) {
-                return false;
+                return "false IOException";
             } finally {
+                if(futureStudioIconFile.exists()){
+                    System.out.println("this is my absolute path: "+futureStudioIconFile.getAbsolutePath());
+
+                }
+                else System.out.println("this is false");
+
                 if (inputStream != null) {
                     inputStream.close();
                 }
@@ -90,9 +102,11 @@ public class ResultActivity extends Activity {
                 if (outputStream != null) {
                     outputStream.close();
                 }
+
             }
+
         } catch (IOException e) {
-            return false;
+            return "false IOE2";
         }
     }
 }
