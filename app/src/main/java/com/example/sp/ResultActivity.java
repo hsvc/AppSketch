@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.view.WindowManager;
 import android.widget.ImageView;
 
 import java.io.File;
@@ -25,10 +26,14 @@ public class ResultActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // 상태바 삭제
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        // 화면 켜진 상태 유지
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
         setContentView(R.layout.activity_result);
-
         DownloadAPI downloadService = ServiceGenerator.createService(DownloadAPI.class);
-
         Call<ResponseBody> call = downloadService.downloadFileWithDynamicUrlSync();
 
         call.enqueue(new Callback<ResponseBody>() {
