@@ -40,7 +40,12 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v){
                 /* 어플리케이션 자체의 저장공간 권한을 줬을 때 이미지에 permission이 주어짐 */
+                /* nodejs서버에 사진을 업로드 */
                 uploadToServer(path);
+                /* */
+                Intent intent=new Intent(MainActivity.this, ResultActivity.class);
+                //intent.putExtra("fileName", fileName);// 파일 명 가져감
+                startActivity(intent);
             }
         });
 
