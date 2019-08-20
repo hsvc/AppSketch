@@ -50,7 +50,7 @@ public class MainActivity extends Activity {
                 uploadToServer(path);
 
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(10000);
                     System.out.println("waiting...");
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -86,7 +86,7 @@ public class MainActivity extends Activity {
             case 100:
                 if (resultCode == RESULT_OK){
                     path= getPathFromUri(getApplicationContext(), data.getData());
-                    System.out.println("this is my path ~ "+ path);
+                    //System.out.println("this is my path ~ "+ path);
                     img.setImageURI(data.getData());
                     upload.setVisibility(View.VISIBLE);
                 }
@@ -116,6 +116,7 @@ public class MainActivity extends Activity {
         UploadAPI uploadAPI = retrofit.create(UploadAPI.class);
         //Create a file object using file path
         File file = new File(filePath);
+        System.out.println("this is file name "+ file);
         // Create a request body with file and image media type
         RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/*"), file);
         // Create MultipartBody.Part using file request-body,file name and part name

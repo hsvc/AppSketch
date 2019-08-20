@@ -41,40 +41,6 @@ public class ResultActivity extends Activity {
 
         setContentView(R.layout.activity_result);
 
-        ImageButton Plain, Cezanne, VanGogh, Monet;
-        final ImageView imageview =findViewById(R.id.main);
-        Plain=findViewById(R.id.imagePlain);
-        Cezanne=findViewById(R.id.imageCezanne);
-        VanGogh=findViewById(R.id.imageVanGogh);
-        Monet=findViewById(R.id.imageMonet);
-
-        /* 이미지 변경되는 메서드 */
-        Plain.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                imageview.setImageResource(R.drawable.p);
-            }
-        });
-        Monet.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                imageview.setImageResource(R.drawable.m);
-            }
-        });
-        VanGogh.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                imageview.setImageResource(R.drawable.v);
-            }
-        });
-        Cezanne.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                imageview.setImageResource(R.drawable.c);
-            }
-        });
-        /* 이미지 변경 끝 */
-
         DownloadAPI downloadService = ServiceGenerator.createService(DownloadAPI.class);
         Call<ResponseBody> call = downloadService.downloadFileWithDynamicUrlSync("/download");
 
@@ -82,10 +48,10 @@ public class ResultActivity extends Activity {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
-                    System.out.println("server contacted and has file: "+response.body());
+                    System.out.println("server contacted and has file: " + response.body());
 
                     String writtenToDisk = writeResponseBodyToDisk(response.body());
-                    System.out.println("response: "+response);
+                    System.out.println("response: " + response);
 
                     System.out.println("file download was a success? " + writtenToDisk);
                 } else {
@@ -98,41 +64,11 @@ public class ResultActivity extends Activity {
                 System.out.println("error");
             }
         });
-//        final DownloadAPI downloadService =
-//                ServiceGenerator.createService(DownloadAPI.class);
-//
-//        Call<ResponseBody> call = downloadService. downloadFileWithDynamicUrlAsync("/download");
-//        call.enqueue(new Callback<ResponseBody>() {
-//            @Override
-//            public void onResponse(Call<ResponseBody> call, final Response<ResponseBody> response) {
-//                if (response.isSuccessful()) {
-//                    System.out.println("server contacted and has file");
-//
-//                    new AsyncTask<Void, Void, Void>() {
-//                        @Override
-//                        protected Void doInBackground(Void... voids) {
-//                            String writtenToDisk = writeResponseBodyToDisk(response.body());
-//
-//                            System.out.println("file download was a success? " + writtenToDisk);
-//                            return null;
-//                        }
-//                    }.execute();
-//                }
-//                else {
-//                    System.out.println("server contact failed");
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<ResponseBody> call, Throwable t) {
-//                System.out.println("error");
-//            }
-//        });
     }
     private String writeResponseBodyToDisk(ResponseBody body) {
         try {
             // todo change the file location/name according to your needs
-            File futureStudioIconFile = new File(getExternalFilesDir(null) + File.separator + "WhatsWrong.jpg");
+            final File futureStudioIconFile = new File(getExternalFilesDir(null) + File.separator + "WhatsWrong.jpg");
 
             InputStream inputStream = null;
             OutputStream outputStream = null;
@@ -142,25 +78,17 @@ public class ResultActivity extends Activity {
                 byte[] fileReader = new byte[1024];
 
                 long fileSize = body.contentLength();
-                //System.out.println("this is body"+body.string());
-                //System.out.println(body +"type : "+ body.contentType());
                 long fileSizeDownloaded = 0;
                 inputStream = body.byteStream();
 
                 outputStream = new FileOutputStream(futureStudioIconFile);
                 while (true) {
                     int read = inputStream.read(fileReader);
-                    System.out.println(fileSize);
-                    //System.out.println("this is inputStream " +inputStream);
-                    //System.out.println(inputStream.read());
                     if (read == -1) {
                         break;
                     }
-
                     outputStream.write(fileReader, 0, read);
-
                     fileSizeDownloaded += read;
-
                     System.out.println("file download: " + fileSizeDownloaded + " of " + fileSize);
                 }
 
@@ -176,28 +104,54 @@ public class ResultActivity extends Activity {
                 }
                 else System.out.println("this is false");
 
-//                Intent i =new Intent();
-//                i.setType("image/*");
-//                i.setData(Uri.fromFile(futureStudioIconFile));
+                ImageButton Plain, Cezanne, VanGogh, Monet;
+                final ImageView imageview = findViewById(R.id.main);
+                Plain = findViewById(R.id.imagePlain);
+                Cezanne = findViewById(R.id.imageCezanne);
+                VanGogh = findViewById(R.id.imageVanGogh);
+                Monet = findViewById(R.id.imageMonet);
 
-                ImageView myImage = (ImageView) findViewById(R.id.main);
-
-                myImage.setImageURI(Uri.fromFile(futureStudioIconFile));
+                Monet.setImageURI(Uri.fromFile(futureStudioIconFile));
 
 
-//                Bitmap bm = BitmapFactory.decodeStream(futureStudioIconFile) ;
-//
-//                ImageView imageView = (ImageView) findViewById(R.id.main) ;
-//                imageView.setImageBitmap(bm) ;
+                /* 이미지 변경되는 메서드 */
+                Plain.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+//                imageview.setImageResource(R.drawable.p);
+                    }
+                });
+                Monet.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        imageview.setImageURI(Uri.fromFile(futureStudioIconFile));
+//                imageview.setImageResource(R.drawable.m);
+                    }
+                });
+                VanGogh.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+//                imageview.setImageResource(R.drawable.v);
+                    }
+                });
+                Cezanne.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+//                imageview.setImageResource(R.drawable.c);
+                    }
+                });
+                /* 이미지 변경 끝 */
+
+
+
+                //종료
                 if (inputStream != null) {
                     inputStream.close();
                 }
-
                 if (outputStream != null) {
                     outputStream.close();
                 }
-
-            }
+            }//finally
 
         } catch (IOException e) {
             return "false IOE2";
