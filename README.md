@@ -8,7 +8,7 @@
 
 ##### Note
 
-1. Write your own IP Adress in ...
+1. Write your own IP Address in ...
 ```
 NetworkClient.java
 ServiceGenerator.java
