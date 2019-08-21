@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
     <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">101.101.160.73</domain>
-        <domain includeSubdomains="true">10.15.73.232</domain>
+        <domain includeSubdomains="true">your id address</domain>
         <domain includeSubdomains="true">localhost</domain>
     </domain-config>
 </network-security-config>
