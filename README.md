@@ -2,9 +2,7 @@
 
 ### Android Application Front for Sketch2Art
 
-
-![UI Design](./image/UI.PNG)
-
+![resultImage](https://user-images.githubusercontent.com/37070273/63467960-9b8d0580-c4a1-11e9-8558-b08fadb9e26a.jpg)
 
 ##### Note
 
