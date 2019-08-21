@@ -50,8 +50,7 @@ public class MainActivity extends Activity {
                 uploadToServer(path);
 
                 try {
-                    Thread.sleep(10000);
-                    System.out.println("waiting...");
+                    Thread.sleep(500000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

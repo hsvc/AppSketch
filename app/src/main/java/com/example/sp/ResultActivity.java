@@ -41,16 +41,86 @@ public class ResultActivity extends Activity {
 
         setContentView(R.layout.activity_result);
 
+        /* Monet */
         DownloadAPI downloadService = ServiceGenerator.createService(DownloadAPI.class);
-        Call<ResponseBody> call = downloadService.downloadFileWithDynamicUrlSync("/download");
+        Call<ResponseBody> callMonet = downloadService.downloadFileWithDynamicUrlSync("/download/monet");
 
-        call.enqueue(new Callback<ResponseBody>() {
+        callMonet.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
                     System.out.println("server contacted and has file: " + response.body());
 
-                    String writtenToDisk = writeResponseBodyToDisk(response.body());
+                    String writtenToDisk = writeResponseBodyToDisk(response.body(), "monet");
+                    System.out.println("response: " + response);
+
+                    System.out.println("file download was a success? " + writtenToDisk);
+                } else {
+                    System.out.println("server contact failed");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                System.out.println("error");
+            }
+        });
+
+        Call<ResponseBody> callVangogh = downloadService.downloadFileWithDynamicUrlSync("/download/vangogh");
+
+        callVangogh.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    System.out.println("server contacted and has file: " + response.body());
+
+                    String writtenToDisk = writeResponseBodyToDisk(response.body(), "vangogh");
+                    System.out.println("response: " + response);
+
+                    System.out.println("file download was a success? " + writtenToDisk);
+                } else {
+                    System.out.println("server contact failed");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                System.out.println("error");
+            }
+        });
+
+        Call<ResponseBody> callCezanne = downloadService.downloadFileWithDynamicUrlSync("/download/cezanne");
+
+        callCezanne.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    System.out.println("server contacted and has file: " + response.body());
+
+                    String writtenToDisk = writeResponseBodyToDisk(response.body(), "cezanne");
+                    System.out.println("response: " + response);
+
+                    System.out.println("file download was a success? " + writtenToDisk);
+                } else {
+                    System.out.println("server contact failed");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                System.out.println("error");
+            }
+        });
+
+        Call<ResponseBody> callPlain = downloadService.downloadFileWithDynamicUrlSync("/download/plain");
+
+        callPlain.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    System.out.println("server contacted and has file: " + response.body());
+
+                    String writtenToDisk = writeResponseBodyToDisk(response.body(), "plain");
                     System.out.println("response: " + response);
 
                     System.out.println("file download was a success? " + writtenToDisk);
@@ -65,10 +135,10 @@ public class ResultActivity extends Activity {
             }
         });
     }
-    private String writeResponseBodyToDisk(ResponseBody body) {
+    private String writeResponseBodyToDisk(ResponseBody body, String filename) {
         try {
             // todo change the file location/name according to your needs
-            final File futureStudioIconFile = new File(getExternalFilesDir(null) + File.separator + "WhatsWrong.jpg");
+            final File futureStudioIconFile = new File(getExternalFilesDir(null) + File.separator + filename +".jpg");
 
             InputStream inputStream = null;
             OutputStream outputStream = null;
@@ -104,45 +174,63 @@ public class ResultActivity extends Activity {
                 }
                 else System.out.println("this is false");
 
-                ImageButton Plain, Cezanne, VanGogh, Monet;
+                final ImageButton Plain, Cezanne, VanGogh, Monet;
                 final ImageView imageview = findViewById(R.id.main);
                 Plain = findViewById(R.id.imagePlain);
                 Cezanne = findViewById(R.id.imageCezanne);
                 VanGogh = findViewById(R.id.imageVanGogh);
                 Monet = findViewById(R.id.imageMonet);
-
-                Monet.setImageURI(Uri.fromFile(futureStudioIconFile));
-
+                Uri monetU = null;
+                Uri vangoghU = null;
+                Uri cezanneU = null;
+                Uri plainU = null;
+                //Monet.setImageURI(Uri.fromFile(futureStudioIconFile));
 
                 /* 이미지 변경되는 메서드 */
-                Plain.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-//                imageview.setImageResource(R.drawable.p);
-                    }
-                });
+                if (filename =="monet"){
+                    monetU=Uri.fromFile(futureStudioIconFile);
+                    Monet.setImageURI(monetU);
+                }else if(filename =="vangogh"){
+                    vangoghU=Uri.fromFile(futureStudioIconFile);
+                    VanGogh.setImageURI(vangoghU);
+                }else if(filename =="cezanne"){
+                    cezanneU=Uri.fromFile(futureStudioIconFile);
+                    Cezanne.setImageURI(cezanneU);
+                } else if(filename=="plain"){
+                    plainU=Uri.fromFile(futureStudioIconFile);
+                    imageview.setImageURI(plainU);
+                }
+
+                final Uri finalMonetU = monetU;
+                final Uri finalVangoghU = vangoghU;
+                final Uri finalCezanneU1 = cezanneU;
+                final Uri finalPlainU = plainU;
+
                 Monet.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        imageview.setImageURI(Uri.fromFile(futureStudioIconFile));
-//                imageview.setImageResource(R.drawable.m);
+                        imageview.setImageURI(finalMonetU);
                     }
                 });
                 VanGogh.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-//                imageview.setImageResource(R.drawable.v);
+                        imageview.setImageURI(finalVangoghU);
                     }
                 });
                 Cezanne.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-//                imageview.setImageResource(R.drawable.c);
+                        imageview.setImageURI(finalCezanneU1);
+                    }
+                });
+                Plain.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        imageview.setImageURI(finalPlainU);
                     }
                 });
                 /* 이미지 변경 끝 */
-
-
 
                 //종료
                 if (inputStream != null) {

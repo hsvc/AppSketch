@@ -12,14 +12,13 @@ public class NetworkClient {
     private static final String BASE_URL = "http://101.101.160.73:3000/";
     //private static final String BASE_URL = "http://10.15.73.232:3000/";
 
-
     private static Retrofit retrofit;
     public static Retrofit getRetrofitClient(Context context) {
         if (retrofit == null) {
             OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                    .connectTimeout(1, TimeUnit.MINUTES)
-                    .readTimeout(30, TimeUnit.SECONDS)
-                    .writeTimeout(15, TimeUnit.SECONDS)
+//                    .connectTimeout(1, TimeUnit.MINUTES)
+//                    .readTimeout(30, TimeUnit.SECONDS)
+//                    .writeTimeout(15, TimeUnit.SECONDS)
                     .build();
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
