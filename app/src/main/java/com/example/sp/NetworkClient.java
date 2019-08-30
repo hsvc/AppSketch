@@ -10,14 +10,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class NetworkClient {
     private static final String BASE_URL = "your id address";
-
+    /* Using retrofit 2 */
     private static Retrofit retrofit;
     public static Retrofit getRetrofitClient(Context context) {
         if (retrofit == null) {
             OkHttpClient okHttpClient = new OkHttpClient.Builder()
-//                    .connectTimeout(1, TimeUnit.MINUTES)
-//                    .readTimeout(30, TimeUnit.SECONDS)
-//                    .writeTimeout(15, TimeUnit.SECONDS)
                     .build();
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)

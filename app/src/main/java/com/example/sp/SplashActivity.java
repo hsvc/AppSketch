@@ -6,11 +6,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.WindowManager;
 
+/* Splash */
 public class SplashActivity extends Activity {
     @Override
     protected  void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-
         // 상태바 삭제
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         // 화면 켜진 상태 유지
@@ -18,7 +18,7 @@ public class SplashActivity extends Activity {
 
         setContentView(R.layout.activity_splash);
 
-        Handler hd=new Handler();
+        Handler hd = new Handler();
         hd.postDelayed(new splashhandler(), 3000); // delay 시간 3초
     }
 

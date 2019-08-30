@@ -1,23 +1,12 @@
 package com.example.sp;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
-import android.util.JsonReader;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-
-import com.google.gson.JsonObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -30,6 +19,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/* 결과 사진이 왔을 때 이를 띄워주는 Activity */
 public class ResultActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,110 +31,94 @@ public class ResultActivity extends Activity {
 
         setContentView(R.layout.activity_result);
 
-        /* Monet */
+        /* 각 화가에 해당하는 사진을 서버를 통해 생성된 폴더에서 가져옴 */
+        /********** Monet **********/
         DownloadAPI downloadService = ServiceGenerator.createService(DownloadAPI.class);
-        Call<ResponseBody> callMonet = downloadService.downloadFileWithDynamicUrlSync("/download/monet");
+        Call<ResponseBody> callMonet = downloadService.downloadFileWithDynamicUrlSync("/download/monet");// 생성된 파일이 있는 폴더
 
         callMonet.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
-                    System.out.println("server contacted and has file: " + response.body());
-
                     String writtenToDisk = writeResponseBodyToDisk(response.body(), "monet");
-                    System.out.println("response: " + response);
-
                     System.out.println("file download was a success? " + writtenToDisk);
                 } else {
                     System.out.println("server contact failed");
                 }
             }
-
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 System.out.println("error");
             }
         });
 
+        /********** Van gogh **********/
         Call<ResponseBody> callVangogh = downloadService.downloadFileWithDynamicUrlSync("/download/vangogh");
 
         callVangogh.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
-                    System.out.println("server contacted and has file: " + response.body());
-
                     String writtenToDisk = writeResponseBodyToDisk(response.body(), "vangogh");
-                    System.out.println("response: " + response);
-
                     System.out.println("file download was a success? " + writtenToDisk);
                 } else {
                     System.out.println("server contact failed");
                 }
             }
-
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 System.out.println("error");
             }
         });
 
+        /********** Cezanne **********/
         Call<ResponseBody> callCezanne = downloadService.downloadFileWithDynamicUrlSync("/download/cezanne");
 
         callCezanne.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
-                    System.out.println("server contacted and has file: " + response.body());
-
                     String writtenToDisk = writeResponseBodyToDisk(response.body(), "cezanne");
-                    System.out.println("response: " + response);
-
                     System.out.println("file download was a success? " + writtenToDisk);
                 } else {
                     System.out.println("server contact failed");
                 }
             }
-
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 System.out.println("error");
             }
         });
 
+        /********** Plain(원본사진) **********/
         Call<ResponseBody> callPlain = downloadService.downloadFileWithDynamicUrlSync("/download/plain");
 
         callPlain.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
-                    System.out.println("server contacted and has file: " + response.body());
-
                     String writtenToDisk = writeResponseBodyToDisk(response.body(), "plain");
-                    System.out.println("response: " + response);
-
                     System.out.println("file download was a success? " + writtenToDisk);
                 } else {
                     System.out.println("server contact failed");
                 }
             }
-
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 System.out.println("error");
             }
         });
     }
+    /* jpg 이미지 파일을 안드로이드에 가져온다, binary 형태로 들어옴!, 성공했을 때 return true */
     private String writeResponseBodyToDisk(ResponseBody body, String filename) {
         try {
-            // todo change the file location/name according to your needs
+            // 파일을 가져옴, 해당 경로를 바꿀 수도 있음 !
             final File futureStudioIconFile = new File(getExternalFilesDir(null) + File.separator + filename +".jpg");
-
             InputStream inputStream = null;
             OutputStream outputStream = null;
 
             try {
-
+                // binary 형태로 download
                 byte[] fileReader = new byte[1024];
 
                 long fileSize = body.contentLength();
@@ -168,12 +142,13 @@ public class ResultActivity extends Activity {
             } catch (IOException e) {
                 return "false IOException";
             } finally {
+                /* // 파일 확인
                 if(futureStudioIconFile.exists()){
                     if(futureStudioIconFile.canRead())
                         System.out.println("this is my absolute path: "+futureStudioIconFile.getAbsolutePath());
                 }
                 else System.out.println("this is false");
-
+                */
                 final ImageButton Plain, Cezanne, VanGogh, Monet;
                 final ImageView imageview = findViewById(R.id.main);
                 Plain = findViewById(R.id.imagePlain);
@@ -186,7 +161,7 @@ public class ResultActivity extends Activity {
                 Uri plainU = null;
                 //Monet.setImageURI(Uri.fromFile(futureStudioIconFile));
 
-                /* 이미지 변경되는 메서드 */
+                /* 각 이미지를 클릭했을 때 main에 해당 이미지가 보여지게 하기 위한 메서드 */
                 if (filename =="monet"){
                     monetU=Uri.fromFile(futureStudioIconFile);
                     Monet.setImageURI(monetU);

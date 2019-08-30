@@ -22,6 +22,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Retrofit;
 
+/* Splash가 꺼진 후 첫 Activity, 사진을 선택하여 변경하는 버튼을 누르는 행동을 위한 Activity */
 public class MainActivity extends Activity {
 
     Button imgsel, upload;
@@ -35,7 +36,6 @@ public class MainActivity extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         // 화면 켜진 상태 유지
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
         setContentView(R.layout.activity_main);
         img=findViewById(R.id.img);
         imgsel=findViewById(R.id.selimg);// Selected Image 관리
@@ -46,16 +46,17 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v){
                 /* 어플리케이션 자체의 저장공간 권한을 줬을 때 이미지에 permission이 주어짐 */
-                /* nodejs서버에 사진을 업로드 */
-                uploadToServer(path);
+
+                uploadToServer(path);// node js 서버에 사진을 업로드
 
                 try {
-                    Thread.sleep(500000);
+                    Thread.sleep(500000); // 업로드 후 이미지 변경에 시간이 걸리기 때문에, 이를 위한 sleep
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+
+                /* 서버에 사진을 업로드 한 후 모델에 따른 결과 사진이 나왔을 때 Intent를 통해 결과 activity로 간다. */
                 Intent intent=new Intent(MainActivity.this, ResultActivity.class);
-                //intent.putExtra("fileName", fileName);// 파일 명 가져감
                 startActivity(intent);
             }
         });
@@ -110,19 +111,21 @@ public class MainActivity extends Activity {
         }
 
     }
+    /* 서버에 사진을 업로드 할 수 있는 메소드 */
     private void uploadToServer(String filePath) {
         Retrofit retrofit = NetworkClient.getRetrofitClient(this);
         UploadAPI uploadAPI = retrofit.create(UploadAPI.class);
-        //Create a file object using file path
+        // 어플리케이션에 있는 file의 path를 가져와야 함, 해당 사진을 서버에 올려 변경시켜줘야 하기 때문에 !
+        // 정확한 Path를 가져오는 방법을 알고 있는 것이 매우 중요함 !!!
         File file = new File(filePath);
-        System.out.println("this is file name "+ file);
-        // Create a request body with file and image media type
+
         RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/*"), file);
-        // Create MultipartBody.Part using file request-body,file name and part name
         MultipartBody.Part part = MultipartBody.Part.createFormData("upload", file.getName(), fileReqBody);
-        //Create request body with text description and text media type
         RequestBody description = RequestBody.create(MediaType.parse("text/plain"), "image-type");
-        Call call = uploadAPI.uploadImage(part, description);
+
+        Call call = uploadAPI.uploadImage(part, description);// 이미지 upload Post 보냄
+
+        /* 서버의 응답 */
         call.enqueue(new Callback() {
             @Override
             public void onResponse(Call call, retrofit2.Response response) {
